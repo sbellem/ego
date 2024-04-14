@@ -1,4 +1,4 @@
-ARG egover=1.4.1
+ARG egover=1.5.0
 
 # Use this to build an executable for Ubuntu 22.04
 FROM ghcr.io/edgelesssys/ego/build-base:v${egover} AS build
@@ -43,6 +43,7 @@ RUN ego bundle helloworld
 # Use the deploy target if you want to deploy your app as a Docker image
 FROM ghcr.io/edgelesssys/ego-deploy:v${egover} AS deploy
 COPY --from=build /ego/samples/helloworld/helloworld /
+COPY --from=build /ego/samples/helloworld/helloworld-bundle /
 ENTRYPOINT ["ego", "run", "helloworld"]
 
 # Use the export target if you just want to use Docker to build your app and then export it
