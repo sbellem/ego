@@ -6,7 +6,7 @@ services:
     #ports:
     #  - "58081:8081"
     environment:
-      APIKEY: ${PCS_APIKEY}
+      APIKEY: ${PCCS_APIKEY}
 
   aesmd:
     image: ghcr.io/initc3/sgx-aesm:2.19-buster
@@ -52,6 +52,7 @@ services:
     depends_on:
       ego-ra-server:
         condition: service_started
+    entrypoint: ["ego-ra-client", "-a", "ego-ra-server:8081"]
 
 volumes:
   aesmd-socket:
