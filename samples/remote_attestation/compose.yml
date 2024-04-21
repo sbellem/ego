@@ -1,6 +1,12 @@
 version: '3.9'
 
 services:
+  pccs:
+    image: ghcr.io/edgelesssys/pccs
+    #ports:
+    #  - "58081:8081"
+    environment:
+      APIKEY: ${PCS_APIKEY}
 
   aesmd:
     image: ghcr.io/initc3/sgx-aesm:2.19-buster
@@ -8,13 +14,13 @@ services:
       - aesmd-socket:/var/run/aesmd
     devices:
       # NOTE in-kernel driver
-      #- /dev/sgx_enclave
-      #- /dev/sgx_provision
+      - /dev/sgx_enclave
+      - /dev/sgx_provision
       # NOTE out-of-tree driver
-      - /dev/isgx
+      #- /dev/isgx
 
-  ego-ra:
-    image: ego-ra
+  ego-ra-server:
+    image: ego-ra-server
     build:
       context: .
       dockerfile: Dockerfile
@@ -24,14 +30,28 @@ services:
     depends_on:
       aesmd:
         condition: service_started
+      pccs:
+        condition: service_started
     volumes:
       - aesmd-socket:/var/run/aesmd
+      - /etc/sgx_default_qcnl.conf:/etc/sgx_default_qcnl.conf
     devices:
       # NOTE in-kernel driver
-      #- /dev/sgx_enclave
-      #- /dev/sgx_provision
+      - /dev/sgx_enclave
+      - /dev/sgx_provision
       # NOTE out-of-tree driver
-      - /dev/isgx
+      #- /dev/isgx
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
+
+  ego-ra-client:
+    image: ego-ra-client
+    build:
+      context: .
+      dockerfile: client.Dockerfile
+    depends_on:
+      ego-ra-server:
+        condition: service_started
 
 volumes:
   aesmd-socket:

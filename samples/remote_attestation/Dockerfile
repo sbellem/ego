@@ -41,4 +41,5 @@ RUN CGO_CFLAGS=-I/opt/ego/include CGO_LDFLAGS=-L/opt/ego/lib ego-go build ra_cli
 FROM ghcr.io/edgelesssys/ego-deploy:v${egover} AS deploy
 WORKDIR /opt/ego-ra
 COPY --from=build /usr/src/ra/server .
+COPY --from=build /usr/src/ra/client .
 ENTRYPOINT ["ego", "run", "server"]
