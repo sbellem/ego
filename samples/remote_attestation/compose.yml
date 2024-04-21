@@ -52,7 +52,7 @@ services:
     depends_on:
       ego-ra-server:
         condition: service_started
-    entrypoint: ["ego-ra-client", "-a", "ego-ra-server:8081"]
+    entrypoint: ["ego-ra-client", "-a", "ego-ra-server:8080"]
     command: ["-s", "ego signerid public.pem"]
 
 volumes:
